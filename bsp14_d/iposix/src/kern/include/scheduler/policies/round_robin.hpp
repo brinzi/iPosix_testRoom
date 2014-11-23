@@ -33,14 +33,14 @@ class round_robin
 
 	struct ready_process_list
 	{
-		ready_process_list* next;	
+		ready_process_list* ready_next;	
 		process_type* process;
 	};	
 
 	struct blocked_process_list
 	{
-		blocked_process_list* next;
-		process_type* process; 	
+		blocked_process_list* blocked_next;
+		process_type* process; 
 	};
 
 	
@@ -200,21 +200,20 @@ class round_robin
 			return 1000;
 		}
 		
-		process_type* move_to_ready(process_type* process)
+		void move_to_ready(process_type* process)
 		{
-			process_list* cur=this->list_head;
 			ready_process_list* cur_ready=this->ready_list_head;
 			ready_process_list* aux = new ready_process_list();
 			if(aux)
 			{
-				pl->process=process;
-				pl->next=this->ready_list_head;
+				aux->process=process;
+				aux->ready_next=this->ready_list_head;
 			
 				if(!this->cur_ready)
 				{
 					if(this->ready_list_head)
 					{
-						this_cur_reasy=this->cur_list_head;
+						this->cur_ready=this->ready_list_head;
 					}
 					else
 					{
@@ -222,9 +221,32 @@ class round_robin
 					}
 			
 			this->ready_list_head=aux;
+			}
 		}
+}		
+
+		void  move_to_blocked(process_type* process)
+		{	
+			blocked_process_list* cur_blocked=this->cur_blocked;
+
+			blocked_process_list* aux=new blocked_process_list();
+
+			if(!this->cur_blocked)
+			{
+				aux->process=process;
+				aux->blocked_next= this->blocked_list_head;
+				if(this->blocked_list_head)
+				{
+					this->cur_blocked=this->blocked_list_head;
+				}
+				else
+				{	
+					this->cur_blocked=aux;
+				}
+			this->blocked_list_head=aux;
+			}	
 		}
-		
+			
 	private:
 		/** A Pointer to the head of the list */
 		process_list* list_head;
@@ -237,7 +259,7 @@ class round_robin
 		/** A Pointer to the current process in the list */
 		process_list* cur;
 		ready_process_list* cur_ready;
-		blocked_process_list* blocked_ready;
+		blocked_process_list* cur_blocked;
 
 };
 
