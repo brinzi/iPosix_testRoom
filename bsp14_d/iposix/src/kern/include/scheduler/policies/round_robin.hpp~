@@ -32,7 +32,7 @@ class round_robin
 	//pus de Brinzi
 
 	struct inactive_process_list{
-		inactive_process_list* inactive_next;	
+		inactive_list* inactive_next;	
 
 		process_type* process;
 	};	
@@ -210,13 +210,14 @@ class round_robin
 		void move_to_inactive(process_type* process)
 		{
 			
-			inactive_process_list* aux = new inactive_process_list();
+			inactive_list* aux = new inactive_list();
 			//remeber process
 			aux->process=process;
 			
 			//add process to list
 			aux->inactive_next=this->inactive_list_head;
 			this->inactive_list_head=aux;
+
 		
 		}
 
@@ -245,7 +246,7 @@ class round_robin
 		process_list* list_head;
 		
 		/**Added by Brinzi-pointers to the head of the rady list and blocked one. */
-		inactive_process_list* inactive_list_head;
+		inactive_list* inactive_list_head;
 		blocked_process_list* blocked_list_head;
   
 
