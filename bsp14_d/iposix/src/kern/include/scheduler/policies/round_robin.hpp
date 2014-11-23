@@ -40,7 +40,7 @@ class round_robin
 	struct blocked_process_list
 	{
 		blocked_process_list* next;
-		process_type process; 	
+		process_type* process; 	
 	};
 
 	
@@ -194,23 +194,50 @@ class round_robin
 			return 0;
 		}
 
+			
 		static inline uint64_t ticks_between_reschedulings()
 		{
 			return 1000;
 		}
-
+		
+		process_type* move_to_ready(process_type* process)
+		{
+			process_list* cur=this->list_head;
+			ready_process_list* cur_ready=this->ready_list_head;
+			ready_process_list* aux = new ready_process_list();
+			if(aux)
+			{
+				pl->process=process;
+				pl->next=this->ready_list_head;
+			
+				if(!this->cur_ready)
+				{
+					if(this->ready_list_head)
+					{
+						this_cur_reasy=this->cur_list_head;
+					}
+					else
+					{
+						this->cur_ready=aux;
+					}
+			
+			this->ready_list_head=aux;
+		}
+		}
+		
 	private:
 		/** A Pointer to the head of the list */
 		process_list* list_head;
 		
-		/**Added by Brinzi */
+		/**Added by Brinzi-pointers to the head of the rady list and blocked one. */
 		ready_process_list* ready_list_head;
-		blocked_process_list* blocked_process_list_head;
+		blocked_process_list* blocked_list_head;
   
 
 		/** A Pointer to the current process in the list */
 		process_list* cur;
 		ready_process_list* cur_ready;
+		blocked_process_list* blocked_ready;
 
 };
 
