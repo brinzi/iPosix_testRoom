@@ -1,0 +1,26 @@
+diff -burN gdb-6.8.org/bfd/config.bfd gdb-6.8/bfd/config.bfd
+--- gdb-6.8.org/bfd/config.bfd	2008-02-14 16:20:24.000000000 +0100
++++ gdb-6.8/bfd/config.bfd	2009-08-07 18:24:37.000000000 +0200
+@@ -522,6 +522,10 @@
+     targ_defvec=bfd_elf32_i386_vec
+     targ_selvecs="i386coff_vec i386aout_vec"
+     ;;
++  i[3-7]86-*-iPosix*)
++    targ_defvec=bfd_elf32_i386_vec
++    targ_selvecs="i386coff_vec i386aout_vec"
++    ;;
+   i[3-7]86-*-darwin* | i[3-7]86-*-macos10* | i[3-7]86-*-rhapsody*)
+     targ_defvec=mach_o_le_vec
+     targ_selvecs="mach_o_le_vec mach_o_be_vec mach_o_fat_vec pef_vec pef_xlib_vec sym_vec"
+diff -burN gdb-6.8.org/config.sub gdb-6.8/config.sub
+--- gdb-6.8.org/config.sub	2008-01-23 03:43:51.000000000 +0100
++++ gdb-6.8/config.sub	2009-08-07 18:03:47.000000000 +0200
+@@ -1251,7 +1251,7 @@
+ 	      | -chorusos* | -chorusrdb* \
+ 	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+ 	      | -mingw32* | -linux-gnu* | -linux-newlib* | -linux-uclibc* \
+-	      | -uxpv* | -beos* | -mpeix* | -udk* \
++	      | -uxpv* | -beos* | -mpeix* | -udk* | -iPosix* \
+ 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
+ 	      | -openstep* | -oskit* | -conix* | -pw32* | -nonstopux* \
+ 	      | -storm-chaos* | -tops10* | -tenex* | -tops20* | -its* \

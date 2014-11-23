@@ -1,0 +1,16 @@
+A timer, used only by the x86_kernel by default, has to implement the
+following functions:
+
+void wait( const uint64_t ticks ) const;
+uint64_t get_ticks() const;
+
+const is currently optional, but isn't maybe in the future
+
+The timer also has to inherit from ::iposix::utils::Singleton< Timerclass >
+(see src/kern/lib/utils/singleton.hpp) and should therefor designed to be used
+as singleton.
+
+
+Please notice: this description is just needed for a timer policy class for
+the x86_kernel. Any other kernel, also another x86 kernel, may have another
+policy requirements for timers.

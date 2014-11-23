@@ -1,0 +1,9 @@
+*.[oa]
+newlib.h
+Makefile
+*.log
+*.status
+makedoc
+stamp-h1
+stmp-targ-include
+targ-include

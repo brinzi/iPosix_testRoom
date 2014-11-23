@@ -1,0 +1,13 @@
+Files libiconv-1.13.org/build-aux/.config.sub.swp and libiconv-1.13/build-aux/.config.sub.swp differ
+diff -burN libiconv-1.13.org/build-aux/config.sub libiconv-1.13/build-aux/config.sub
+--- libiconv-1.13.org/build-aux/config.sub	2009-05-19 00:55:33.000000000 +0200
++++ libiconv-1.13/build-aux/config.sub	2009-05-19 00:55:57.000000000 +0200
+@@ -1263,7 +1263,7 @@
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
+ 	      | -kopensolaris* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* | -aros* \
++	      | -aos* | -aros* | -iPosix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \

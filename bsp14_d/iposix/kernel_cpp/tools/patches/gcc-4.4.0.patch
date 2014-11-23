@@ -1,0 +1,115 @@
+diff -burN gcc-4.4.0.org/config.sub gcc-4.4.0/config.sub
+--- gcc-4.4.0.org/config.sub	2009-07-18 23:41:06.000000000 +0200
++++ gcc-4.4.0/config.sub	2009-07-18 23:31:44.000000000 +0200
+@@ -1257,7 +1257,7 @@
+ 	      | -*vms* | -sco* | -esix* | -isc* | -aix* | -sunos | -sunos[34]*\
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* \
++	      | -aos* | -iPosix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \
+diff -burN gcc-4.4.0.org/gcc/config/i386/t-iPosix-i386 gcc-4.4.0/gcc/config/i386/t-iPosix-i386
+--- gcc-4.4.0.org/gcc/config/i386/t-iPosix-i386	1970-01-01 01:00:00.000000000 +0100
++++ gcc-4.4.0/gcc/config/i386/t-iPosix-i386	2009-07-18 23:31:44.000000000 +0200
+@@ -0,0 +1,10 @@
++#
++# This file was based on t-rtems-i386
++#
++
++$(T)crti.o: $(srcdir)/config/i386/sol2-ci.asm $(GCC_PASSES)
++	sed -e '/^!/d' <$(srcdir)/config/i386/sol2-ci.asm >crti.s
++	$(GCC_FOR_TARGET) -c -o $(T)crti.o crti.s
++$(T)crtn.o: $(srcdir)/config/i386/sol2-cn.asm $(GCC_PASSES)
++	sed -e '/^!/d' <$(srcdir)/config/i386/sol2-cn.asm >crtn.s
++	$(GCC_FOR_TARGET) -c -o $(T)crtn.o crtn.s
+diff -burN gcc-4.4.0.org/gcc/config/iPosix.h gcc-4.4.0/gcc/config/iPosix.h
+--- gcc-4.4.0.org/gcc/config/iPosix.h	1970-01-01 01:00:00.000000000 +0100
++++ gcc-4.4.0/gcc/config/iPosix.h	2009-07-18 23:31:44.000000000 +0200
+@@ -0,0 +1,29 @@
++/*
++ * This file is based on rtems.h/sol2.h/linux.h.
++ * Trying to do what we understand.
++ */
++
++/*
++ * Dummy start/end specification to let linker work as
++ * needed by autoconf scripts using this compiler.
++ */
++#undef STARTFILE_SPEC
++#define STARTFILE_SPEC "crt0.o%s crti.o%s crtbegin.o%s"
++
++#undef ENDFILE_SPEC
++#define ENDFILE_SPEC   "crtend.o%s crtn.o%s"
++
++/*
++ * Some Target stuff
++ */
++#undef TARGET_OS_CPP_BUILTINS
++#define TARGET_OS_CPP_BUILTINS()      \
++	do {                                \
++		builtin_define_std ("iPosix");      \
++		builtin_define_std ("unix");      \
++		builtin_assert ("system=iPosix");   \
++		builtin_assert ("system=unix");   \
++	} while(0);
++
++#undef TARGET_VERSION
++#define TARGET_VERSION fprintf(stderr, " (i386 iPosix)");
+diff -burN gcc-4.4.0.org/gcc/config.gcc gcc-4.4.0/gcc/config.gcc
+--- gcc-4.4.0.org/gcc/config.gcc	2009-07-18 23:41:05.000000000 +0200
++++ gcc-4.4.0/gcc/config.gcc	2009-07-18 23:31:44.000000000 +0200
+@@ -573,6 +573,11 @@
+     yes) thread_file='rtems' ;;
+   esac
+   ;;
++*-*-iPosix*)
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  ;;
+ *-*-vxworks*)
+   tmake_file=t-vxworks
+   xm_defines=POSIX
+@@ -1169,6 +1174,12 @@
+ 	extra_parts="crtbegin.o crtend.o crti.o crtn.o"
+ 	tmake_file="${tmake_file} i386/t-rtems-i386 i386/t-crtstuff t-rtems"
+ 	;;
++i[3-7]86-*-iPosix*)
++	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h i386/i386elf.h iPosix.h"
++	extra_parts="crtbegin.o crtend.o crti.o crtn.o"
++	tmake_file="${tmake_file} i386/t-iPosix-i386 i386/t-crtstuff t-svr4"
++	use_fixproto=yes
++	;;
+ i[34567]86-*-solaris2*)
+ 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h svr4.h i386/sysv4.h sol2.h"
+ 	case ${target} in
+diff -burN gcc-4.4.0.org/libgcc/config.host gcc-4.4.0/libgcc/config.host
+--- gcc-4.4.0.org/libgcc/config.host	2009-07-18 23:40:56.000000000 +0200
++++ gcc-4.4.0/libgcc/config.host	2009-07-18 23:31:44.000000000 +0200
+@@ -316,6 +316,8 @@
+ 	;;
+ i[34567]86-*-rtems*)
+ 	;;
++i[3-7]86-*-iPosix*)
++	;;
+ i[34567]86-*-solaris2*)
+ 	tmake_file="${tmake_file} i386/t-sol2"
+ 	case ${host} in
+diff -burN gcc-4.4.0.org/libstdc++-v3/crossconfig.m4 gcc-4.4.0/libstdc++-v3/crossconfig.m4
+--- gcc-4.4.0.org/libstdc++-v3/crossconfig.m4	2009-07-18 23:41:08.000000000 +0200
++++ gcc-4.4.0/libstdc++-v3/crossconfig.m4	2009-07-18 23:31:44.000000000 +0200
+@@ -140,6 +140,12 @@
+     GCC_CHECK_TLS
+     AM_ICONV
+     ;;
++  *-iPosix*)
++    AC_CHECK_HEADERS([sys/types.h locale.h float.h])
++	GLIBCXX_CHECK_BUILTIN_MATH_SUPPORT
++	GLIBCXX_CHECK_COMPLEX_MATH_SUPPORT
++	GLIBCXX_CHECK_STDLIB_SUPPORT
++    ;;
+   *-mingw32*)
+     GLIBCXX_CHECK_LINKER_FEATURES
+     GLIBCXX_CHECK_MATH_SUPPORT

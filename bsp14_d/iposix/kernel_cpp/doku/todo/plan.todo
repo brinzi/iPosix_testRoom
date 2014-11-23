@@ -1,0 +1,38 @@
+1. recherche
+	- Runtime
+	- Class library
+		- usability
+		- requerments
+	- Boot Process
+	- I/O
+		- Display
+			- Dummy
+			- correct one
+		- HID
+			- Dummy
+			- correct one
+		- Block-Device (HD)
+			- Dummy
+			- correct one
+	- Konzepte
+		- Boot Process
+			- dummy I/O
+		- OS
+		- VM
+		- Sync
+			- Semaphore
+			- Monitor
+		- Scheduling
+			- Round Robin
+			- ???
+		- Syscalls
+		- I/O good one
+		- filesystem
+
+2. Struktur
+	- Classdiagrams
+	- 
+
+3. Implementation + basic documentation
+
+4. main documentation

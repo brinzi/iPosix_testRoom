@@ -1,0 +1,8 @@
+A video implementation is used as policy of the i_video class. Please
+consider to make a specialized implementation of i_video for your video class,
+if needed.
+
+A video implementation needs the following functions:
+
+void clear();
+void write( const char c );

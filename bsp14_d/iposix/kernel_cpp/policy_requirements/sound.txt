@@ -1,0 +1,5 @@
+Any sound implementation should implement at least:
+
+void beep();
+void play_sound( const uint32_t frequency );
+void stop_sound();

@@ -1,0 +1,27 @@
+All memory management policies have to met the following requirements:
+
+If the policy is a physical memory management, it has to be a template:
+template< uint32_t Unit > where Unit is the page size or 0 if pages are not
+used.
+
+Note: Include "scheduler/i_process.h" to have the
+::iposix::scheduler::process_type typedef.
+
+A standard constructor, accessible (public oder via friend class) for ::iposix::utils::Singleton< policyname > (see below )
+A member function void * malloc( uint32_t size, bool kernel, bool aligned )
+where aligned is only relevant when the kernel parameter is true. Otherwise it
+should be aligned in any ways, because the memory management is virtual.
+A member function void * vmalloc( uint32_t size, ::iposix::scheduler::process_Type::hw_type& proc, void * base )
+which only has to be implemented if the mm policy is a virtual memory management.
+It has to malloc size bytes at base for proc. A physical management has
+to return 0 here.
+A member function bool free( void *, bool ).
+A member function template< typename T > void set_memory_areas( const T& )
+which will be called once, when this memory management policy is created to inform it about usable
+memory areas. You should call get_memory_areas (see one architecture specific
+memory implementation) to get the memory areas the strategy should manage.
+To ensure it will only be called once, implement a function
+bool initialized() returning false, when set_memory_areas wasn't called, true
+otherwise.
+
+Additionally the policy has to inherit ::iposix::utils::Singleton< policyname >.

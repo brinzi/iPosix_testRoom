@@ -1,0 +1,6 @@
+doc/doxygen.log
+doc/doxygen
+tags
+.*.swp
+serial.out
+

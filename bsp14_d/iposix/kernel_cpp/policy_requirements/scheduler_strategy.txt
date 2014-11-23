@@ -1,0 +1,38 @@
+Scheduling strategies are implemented as policies. If you want to implement a
+scheduling strategy you should at least implement the follwing functions.
+
+A scheduling strategy needs the follwing function:
+	/**
+	 * This function musst return the process whose state is currently "running"
+	 */
+process_type* get_current_process() const;
+
+	/**
+	 * This function musst return the process which should be the next "running"
+	 * process. Furthermore it should set the process as the current "running"
+	 * process therefore the get_current_process() function return this procces
+	 * as current afterwarts.
+	 */
+process_type* get_next_process();
+	
+	/**
+	 * This function musst insert the process given by the parameter in any
+	 * structure so that the process is remembered. When/If it is scheduled
+	 * depends on the strategie.
+	 */
+void push_new( process_type* process );
+
+	/**
+	 * This function musst remove the process given by the parameter from the
+	 * data structures and should return the remove process (parameter) on
+	 * success (so any body else could deallocate the memory or 0 on any errors
+	 */
+process_type* remove( process_type* process );
+
+	/**
+	 * This function is used by the timer to call the context switch function
+	 * therefore this function has to return the count of ticks between
+	 * rescheduling (this number could change maybe if there is only one process
+	 * the number of ticks could be very high).
+	 */
+static inline uint64_t ticks_between_reschedulings();

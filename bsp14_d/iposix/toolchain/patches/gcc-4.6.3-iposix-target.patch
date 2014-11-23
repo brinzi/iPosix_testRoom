@@ -1,0 +1,129 @@
+diff -NrwuBb a/config.sub b/config.sub
+--- a/config.sub	2010-05-25 15:22:07.000000000 +0200
++++ b/config.sub	2012-05-24 07:48:49.000000000 +0200
+@@ -1297,7 +1297,7 @@
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -auroraux* | -solaris* \
+ 	      | -sym* | -kopensolaris* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* | -aros* \
++	      | -aos* | -aros* | -iposix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \
+diff -NrwuBb a/gcc/config/i386/t-iposix-i386 b/gcc/config/i386/t-iposix-i386
+--- a/gcc/config/i386/t-iposix-i386	1970-01-01 01:00:00.000000000 +0100
++++ b/gcc/config/i386/t-iposix-i386	2012-05-24 07:48:49.000000000 +0200
+@@ -0,0 +1,11 @@
++#
++# This file was based on t-rtems-i386
++#
++
++$(T)crti.o: $(srcdir)/config/i386/sol2-ci.asm $(GCC_PASSES)
++	sed -e '/^!/d' <$(srcdir)/config/i386/sol2-ci.asm >crti.s
++	$(GCC_FOR_TARGET) -c -o $(T)crti.o crti.s
++$(T)crtn.o: $(srcdir)/config/i386/sol2-cn.asm $(GCC_PASSES)
++	sed -e '/^!/d' <$(srcdir)/config/i386/sol2-cn.asm >crtn.s
++	$(GCC_FOR_TARGET) -c -o $(T)crtn.o crtn.s
++
+diff -NrwuBb a/gcc/config/iposix.h b/gcc/config/iposix.h
+--- a/gcc/config/iposix.h	1970-01-01 01:00:00.000000000 +0100
++++ b/gcc/config/iposix.h	2012-05-24 07:48:49.000000000 +0200
+@@ -0,0 +1,30 @@
++/*
++ * This file is based on rtems.h/sol2.h/linux.h.
++ * Trying to do what we understand.
++ */
++
++/*
++ * Dummy start/end specification to let linker work as
++ * needed by autoconf scripts using this compiler.
++ */
++#undef STARTFILE_SPEC
++#define STARTFILE_SPEC "crt0.o%s crti.o%s crtbegin.o%s"
++
++#undef ENDFILE_SPEC
++#define ENDFILE_SPEC   "crtend.o%s crtn.o%s"
++
++/*
++ * Some Target stuff
++ */
++#undef TARGET_OS_CPP_BUILTINS
++#define TARGET_OS_CPP_BUILTINS()      \
++	do {                                \
++		builtin_define_std ("iposix");      \
++		builtin_define_std ("unix");      \
++		builtin_assert ("system=iposix");   \
++		builtin_assert ("system=unix");   \
++	} while(0);
++
++#undef TARGET_VERSION
++#define TARGET_VERSION fprintf(stderr, " (i386 iposix)");
++
+diff -NrwuBb a/gcc/config.gcc b/gcc/config.gcc
+--- a/gcc/config.gcc	2011-07-22 18:44:50.000000000 +0200
++++ b/gcc/config.gcc	2012-05-24 07:48:49.000000000 +0200
+@@ -676,6 +676,11 @@
+   extra_options="${extra_options} rtems.opt"
+   use_gcc_stdint=wrap
+   ;;
++*-*-iposix*)
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  ;;
+ *-*-uclinux*)
+   extra_options="$extra_options gnu-user.opt"
+   use_gcc_stdint=wrap
+@@ -1363,6 +1368,12 @@
+ 	extra_parts="crtbegin.o crtend.o crti.o crtn.o"
+ 	tmake_file="${tmake_file} i386/t-rtems-i386 i386/t-crtstuff t-rtems"
+ 	;;
++i[3-7]86-*-iposix*)
++	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h i386/i386elf.h iposix.h"
++	extra_parts="crtbegin.o crtend.o crti.o crtn.o"
++	tmake_file="${tmake_file} i386/t-iposix-i386 i386/t-crtstuff t-svr4"
++	use_fixproto=yes
++	;;
+ i[34567]86-*-solaris2*)
+ 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h i386/sysv4.h sol2.h"
+ 	# Set default arch_32 to pentium4, tune_32 to generic like the other
+diff -NrwuBb a/libgcc/config.host b/libgcc/config.host
+--- a/libgcc/config.host	2011-11-23 23:15:54.000000000 +0100
++++ b/libgcc/config.host	2012-05-24 07:48:49.000000000 +0200
+@@ -311,6 +311,8 @@
+ 	;;
+ i[34567]86-*-rtems*)
+ 	;;
++i[3-7]86-*-iposix*)
++	;;
+ i[34567]86-*-solaris2*)
+ 	tmake_file="${tmake_file} i386/t-sol2"
+ 	case ${host} in
+diff -NrwuBb a/libiberty/configure.ac b/libiberty/configure.ac
+--- a/libiberty/configure.ac	2010-11-21 04:29:27.000000000 +0100
++++ b/libiberty/configure.ac	2012-05-24 07:48:49.000000000 +0200
+@@ -431,6 +431,8 @@
+ 
+     # Of the functions in $checkfuncs, newlib only has strerror.
+     AC_DEFINE(HAVE_STRERROR)
++    AC_DEFINE(HAVE_PSIGNAL)
++    AC_DEFINE(HAVE_STRSIGNAL)
+ 
+     setobjs=yes
+ 
+diff -NrwuBb a/libstdc++-v3/crossconfig.m4 b/libstdc++-v3/crossconfig.m4
+--- a/libstdc++-v3/crossconfig.m4	2011-02-04 08:26:57.000000000 +0100
++++ b/libstdc++-v3/crossconfig.m4	2012-05-24 07:48:49.000000000 +0200
+@@ -150,6 +150,12 @@
+     GCC_CHECK_TLS
+     AM_ICONV
+     ;;
++  *-iposix*)
++    AC_CHECK_HEADERS([sys/types.h locale.h float.h])
++	GLIBCXX_CHECK_BUILTIN_MATH_SUPPORT
++	GLIBCXX_CHECK_COMPLEX_MATH_SUPPORT
++	GLIBCXX_CHECK_STDLIB_SUPPORT
++    ;;
+   *-mingw32*)
+     GLIBCXX_CHECK_LINKER_FEATURES
+     GLIBCXX_CHECK_MATH_SUPPORT

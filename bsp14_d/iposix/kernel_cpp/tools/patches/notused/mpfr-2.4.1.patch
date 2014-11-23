@@ -1,0 +1,12 @@
+diff -burN mpfr-2.4.1.org/config.sub mpfr-2.4.1/config.sub
+--- mpfr-2.4.1.org/config.sub	2009-05-19 00:50:39.000000000 +0200
++++ mpfr-2.4.1/config.sub	2009-05-19 00:51:26.000000000 +0200
+@@ -1239,7 +1239,7 @@
+ 	      | -*vms* | -sco* | -esix* | -isc* | -aix* | -sunos | -sunos[34]*\
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* \
++	      | -aos* | -iPosix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \

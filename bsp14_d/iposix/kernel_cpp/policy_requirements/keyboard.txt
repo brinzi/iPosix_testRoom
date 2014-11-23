@@ -1,0 +1,19 @@
+A keyboard class, to be used as keyboard policy for the x86_kernel, has to
+implement the following functions:
+
+uint8_t get_next_event(); //returns the next keyboard scancode
+char get_next_key(); //returns the next pressed key as ASCII.
+void set_num_lock_led_state(const bool state); //sets the state of the num lock LED.
+void set_caps_lock_led_state(const bool state); //sets the state of the caps lock LED.
+void set_scroll_lock_led_state(const bool state); //sets the state of the scroll lock LED.
+bool get_num_lock_led_state(); returns current state of the num lock LED.
+bool get_caps_lock_led_state(); //returns current state of the caps lock LED.
+bool get_scroll_lock_led_state(); //returns current state of the scroll lock LED.
+
+The keyboard also has to inherit from ::iposix::utils::Singleton< Keyboardclass >
+(see src/kern/lib/utils/singleton.hpp) and should therefor designed to be used
+as singleton.
+
+Please notice: this description is just needed for a keyboard policy class for
+the x86_kernel. Any other kernel, also another x86 kernel, may have another
+policy requirements for keyboards.

@@ -1,0 +1,196 @@
+#pragma once
+#include "syscalls.h"
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/fcntl.h>
+#include <sys/times.h>
+#include <sys/errno.h>
+#include <sys/time.h>
+#include <stdio.h>
+
+#include <errno.h>
+#undef errno
+extern int errno;
+
+char *__env[1] = { 0 };
+char **environ = __env;
+
+void _exit()
+{
+	
+}
+
+/**
+ * Close a file.
+ */
+int close(int file)
+{
+	return -1;
+}
+
+/**
+ * Transfer control to a new process.
+ */
+int execve(char *name, char **argv, char **env)
+{
+	errno = ENOMEM;
+	return -1;
+}
+
+/**
+ * Create a new process.
+ */
+int fork(void)
+{
+	errno = EAGAIN;
+	return -1;
+}
+
+/**
+ * Status of an open file.
+ */
+int fstat(int file, struct stat *st)
+{
+	st->st_mode = S_IFCHR;
+	return 0;
+}
+
+/**
+ * Process-ID
+ */
+int getpid(void)
+{
+	return 1;
+}
+
+/**
+ * Query whether output stream is a terminal.
+ */
+int isatty(int file)
+{
+	return 1;
+}
+
+/**
+ * Send a signal.
+ */
+int kill(int pid, int sig)
+{
+	errno = EINVAL;
+	return -1;
+}
+
+/**
+ * Establish a new name for an existing file.
+ */
+int link(char *old, char *new) 
+{
+	errno = EMLINK;
+	return -1;
+}
+
+/**
+ * Set position in a file.
+ */
+int lseek(int file, int ptr, int dir)
+{
+	return 0;
+}
+
+/**
+ * Open a file.
+ */
+//int open(const char *name, int flags, int mode) 
+int open(const char *name, int flags,...) 
+{
+	return -1;
+}
+
+/**
+ * Read from a file.
+ */
+int read(int file, char *ptr, int len)
+{
+	return 0;
+}
+
+/**
+ * Increase program data space. Used by malloc for example.
+ */
+caddr_t sbrk(int incr)
+{
+	extern char _end;		/* Defined by the linker */
+	static char *heap_end;
+	char *prev_heap_end;
+	static char *stack_ptr = 0; //not a good idea but save
+
+	if (heap_end == 0)
+	{
+		heap_end = &_end;
+	}
+
+	prev_heap_end = heap_end;
+
+	if (heap_end + incr > stack_ptr)
+	{
+		write (1, "Heap and stack collision\n", 25);
+		abort ();
+	}
+
+	heap_end += incr;
+
+	return (caddr_t) prev_heap_end;
+}
+
+/**
+ * Status of a file (by name).
+ */
+int stat(const char *file, struct stat *st)
+{
+	st->st_mode = S_IFCHR;
+	return 0;
+}
+
+/**
+ * Timing information for current process.
+ */
+//TODO return should be clock_t
+//int times(struct tms *buf)
+clock_t times(struct tms *buf)
+{
+	return -1;
+}
+
+/**
+ * Remove a file's directory entry.
+ */
+int unlink(char *name)
+{
+	errno = ENOENT;
+	return -1;
+}
+
+/**
+ * Wait for a child process.
+ */
+int wait(int *status)
+{
+	errno = ECHILD;
+	return -1;
+}
+
+/**
+ * Write to a file. libc subroutines will use this system routine for output to all files, including stdout.
+ */
+int write(int file, char *ptr, int len)
+{
+	return 0;
+}
+
+//TODO implement and checkout if needed
+int gettimeofday(struct timeval *p, void *tz)
+{
+	return 0;
+}
+

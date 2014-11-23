@@ -1,0 +1,75 @@
+diff -rwuBb a/bfd/config.bfd b/bfd/config.bfd
+--- a/bfd/config.bfd	2011-07-29 00:35:13.000000000 +0200
++++ b/bfd/config.bfd	2012-05-02 14:38:59.790852261 +0200
+@@ -500,6 +500,11 @@
+     targ_defvec=bfd_elf32_i386_vec
+     targ_selvecs="i386coff_vec i386aout_vec"
+     ;;
++  i[3-7]86-*-iposix*)
++    targ_defvec=bfd_elf32_i386_vec
++    targ_selvecs=i386coff_vec
++    targ64_selvecs=bfd_elf64_x86_64_vec
++    ;;
+   i[3-7]86-*-darwin* | i[3-7]86-*-macos10* | i[3-7]86-*-rhapsody*)
+     targ_defvec=mach_o_i386_vec
+     targ_selvecs="mach_o_le_vec mach_o_be_vec mach_o_fat_vec pef_vec pef_xlib_vec sym_vec"
+diff -rwuBb a/config.sub b/config.sub
+--- a/config.sub	2011-06-06 12:36:06.000000000 +0200
++++ b/config.sub	2012-05-02 14:39:05.730998340 +0200
+@@ -1322,7 +1322,7 @@
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -auroraux* | -solaris* \
+ 	      | -sym* | -kopensolaris* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* | -aros* \
++	      | -aos* | -aros* | -iposix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \
+diff -rwuBb a/configure b/configure
+--- a/configure	2011-08-14 14:28:15.000000000 +0200
++++ b/configure	2012-05-02 14:39:02.730924552 +0200
+@@ -3160,6 +3160,9 @@
+   *-*-rtems*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
++  *-*-iposix*)
++    noconfigdirs="$noconfigdirs ${libgcj}"
++    ;;
+   *-*-tpf*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
+diff -rwuBb a/configure.ac b/configure.ac
+--- a/configure.ac	2011-11-21 12:58:27.000000000 +0100
++++ b/configure.ac	2012-05-02 14:38:51.040637076 +0200
+@@ -596,6 +596,9 @@
+   *-*-rtems*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
++  *-*-iposix*)
++    noconfigdirs="$noconfigdirs ${libgcj}"
++    ;;
+   *-*-tpf*)
+     noconfigdirs="$noconfigdirs ${libgcj}"
+     ;;
+diff -rwuBb a/gas/configure.tgt b/gas/configure.tgt
+--- a/gas/configure.tgt	2011-06-20 15:23:21.000000000 +0200
++++ b/gas/configure.tgt	2012-05-02 14:39:09.251084896 +0200
+@@ -211,6 +211,7 @@
+   i386-*-msdosdjgpp* \
+   | i386-*-go32*)			fmt=coff em=go32 ;;
+   i386-*-rtems*)			fmt=elf ;;
++  i386-*-iposix*)			fmt=elf ;;
+   i386-*-gnu*)				fmt=elf em=gnu ;;
+   i386-*-mach*)				fmt=aout em=mach ;;
+   i386-*-msdos*)			fmt=aout ;;
+diff -rwuBb a/ld/configure.tgt b/ld/configure.tgt
+--- a/ld/configure.tgt	2011-11-21 10:29:37.000000000 +0100
++++ b/ld/configure.tgt	2012-05-02 14:38:55.390744047 +0200
+@@ -174,6 +174,7 @@
+ i[3-7]86-*-lynxos*)	targ_emul=i386lynx ;;
+ i[3-7]86-*-coff)	targ_emul=i386coff ;;
+ i[3-7]86-*-rtems*)	targ_emul=elf_i386 ;;
++i[3-7]86-*-iposix*)	targ_emul=elf_i386 ;;
+ i[3-7]86-*-aros*)	targ_emul=elf_i386 ;;
+ i[3-7]86-*-rdos*)	targ_emul=elf_i386 ;;
+ i[3-7]86-*-bsd)		targ_emul=i386bsd ;;

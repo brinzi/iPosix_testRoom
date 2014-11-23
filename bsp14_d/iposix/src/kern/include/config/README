@@ -1,0 +1,42 @@
+This folder contains configuration includes. In the main folder include/config
+should be some header files which should be included by the coresponding header.
+The main folder also contains a folder for every architecture with architecture
+depending configuration files.
+
+Architecture independent:
+	If you write a component which is architecture independent you should write a
+	config file in the main folder which makes a define and includes the
+	component.
+
+For example:
+	The scheduling stragtegie:
+		There are serveral possiblities how to schedule processes but you would never
+		change the used strategie during runtime. So you write a config header
+		with a define SCHEDULER_STRATEGIE to your strategie:
+		#define SCHEDULER_STRATEGIE ::iposix::scheduler::policies::my_strategie
+		and an include for that file
+		#include "scheduler/policies/my_strategie.h"
+		this file should be include by i_scheduler.h
+		#include "config/config_scheduler.h"
+
+Architecture dependent:
+	IF you write a component which is architecture dependent you should write a
+	config file in the main folder and a config file in the architecture folder.
+	The file in the main folder should decide depending on the compiled
+	architecture which architecture config file should be included.
+
+For example:
+	The scheduler itself:
+		Because how to change the current running process is architecture
+		dependent you write the config file in the main folder:
+		#pragma once
+		#include "config/config.h"		//change the architecture in this 
+										//configfile
+		#ifdef _IPOSIX_ARCHITECTURE_NAME_
+		#	include "config/x86/config_scheduler.h"
+		//other architectures are following
+		#endif
+		And in the architecture folder:
+		#pragma once
+		#define ARCH_SCHEDULER ::iposix::arch::x86::scheduler
+		#include "x86/scheduler/scheduler.h"

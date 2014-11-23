@@ -1,0 +1,17 @@
+The Architecture depending part of the scheduler should at least implement the
+follwing functions:
+
+	/**
+	 * This Function does the context switch between to processes. The Paramters
+	 * does not have to be of type process_type they could be of any type
+	 * process in inherited from.
+	 */
+void switch_to( process_type& prev, process_type& next );
+
+	/**
+	 * This function should prepare a process for running. It should start it's
+	 * execusion with calling fct_ptr and the other parameters. Note that you
+	 * have to proviede the typedef for start_function but it should be
+	 *	void foo( int num, void* data ); //int depends on hardware 32/64
+	 */
+void prepare( process_type& process, start_function fct_ptr );

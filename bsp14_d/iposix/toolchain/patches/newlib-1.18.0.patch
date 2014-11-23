@@ -1,0 +1,122 @@
+diff -NrwuBb a/config.sub b/config.sub
+--- a/config.sub	2009-11-20 11:10:09.000000000 +0100
++++ b/config.sub	2012-05-04 10:39:18.000000000 +0200
+@@ -1280,7 +1280,7 @@
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
+ 	      | -kopensolaris* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* | -aros* \
++	      | -aos* | -aros* | -iposix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \
+diff -NrwuBb a/newlib/configure.host b/newlib/configure.host
+--- a/newlib/configure.host	2009-12-10 18:12:11.000000000 +0100
++++ b/newlib/configure.host	2012-05-04 10:39:18.000000000 +0200
+@@ -443,6 +443,10 @@
+ 	##newlib_cflags="${newlib_cflags} -idirafter ${gcc_dir}include"
+ 	;;
+ 
++  i[3-7]86-*-iposix*)
++    sys_dir=iposix
++	;;
++
+   m68hc11-*-*|m6811-*-*|m6812-*-*|m68hc12-*-*)
+ 	;;
+ 
+diff -NrwuBb a/newlib/libc/sys/configure.in b/newlib/libc/sys/configure.in
+--- a/newlib/libc/sys/configure.in	2007-05-24 19:33:37.000000000 +0200
++++ b/newlib/libc/sys/configure.in	2012-05-04 10:39:18.000000000 +0200
+@@ -29,6 +29,7 @@
+ 	h8300hms) AC_CONFIG_SUBDIRS(h8300hms) ;;
+ 	h8500hms) AC_CONFIG_SUBDIRS(h8500hms) ;;
+ 	linux) AC_CONFIG_SUBDIRS(linux) ;;
++	iposix) AC_CONFIG_SUBDIRS(iposix) ;;
+ 	m88kbug) AC_CONFIG_SUBDIRS(m88kbug) ;;
+ 	mmixware) AC_CONFIG_SUBDIRS(mmixware) ;;
+ 	netware) AC_CONFIG_SUBDIRS(netware) ;;
+diff -NrwuBb a/newlib/libc/sys/iposix/Makefile.am b/newlib/libc/sys/iposix/Makefile.am
+--- a/newlib/libc/sys/iposix/Makefile.am	1970-01-01 01:00:00.000000000 +0100
++++ b/newlib/libc/sys/iposix/Makefile.am	2012-05-04 10:39:18.000000000 +0200
+@@ -0,0 +1,25 @@
++AUTOMAKE_OPTIONS = cygnus
++INCLUDES = $(NEWLIB_CFLAGS) $(CROSS_CFLAGS) $(TARGET_CFLAGS)
++AM_CCASFLAGS = $(INCLUDES)
++
++noinst_LIBRARIES = lib.a
++
++if MAY_SUPPLY_SYSCALLS
++extra_objs = $(lpfx)syscalls.o
++else
++extra_objs =
++endif
++
++lib_a_SOURCES =
++lib_a_LIBADD = $(extra_objs)
++EXTRA_lib_a_SOURCES = syscalls.c crt0.S
++lib_a_DEPENDENCIES = $(extra_objs)
++lib_a_CCASFLAGS = $(AM_CCASFLAGS)
++lib_a_CFLAGS = $(AM_CFLAGS)
++
++if MAY_SUPPLY_SYSCALLS
++all: crt0.o
++endif
++
++ACLOCAL_AMFLAGS = -I ../../..
++CONFIG_STATUS_DEPENDENCIES = $(newlib_basedir)/configure.host
+diff -NrwuBb a/newlib/libc/sys/iposix/configure.in b/newlib/libc/sys/iposix/configure.in
+--- a/newlib/libc/sys/iposix/configure.in	1970-01-01 01:00:00.000000000 +0100
++++ b/newlib/libc/sys/iposix/configure.in	2012-05-04 10:39:18.000000000 +0200
+@@ -0,0 +1,7 @@
++AC_PREREQ(2.59)
++AC_INIT([newlib], [NEWLIB_VERSION])
++AC_CONFIG_SRCDIR([crt0.S])
++AC_CONFIG_AUX_DIR(../../../..)
++NEWLIB_CONFIGURE(../../..)
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+diff -NrwuBb a/newlib/libc/sys/iposix/crt0.S b/newlib/libc/sys/iposix/crt0.S
+--- a/newlib/libc/sys/iposix/crt0.S	1970-01-01 01:00:00.000000000 +0100
++++ b/newlib/libc/sys/iposix/crt0.S	2012-05-04 10:39:18.000000000 +0200
+@@ -0,0 +1,29 @@
++	.text
++	.align 4
++
++	.globl _start
++_start:
++	xorl %ebp, %ebp
++
++	movl $__bss_start, %edi
++	movl $_end, %ecx
++	subl %edi, %ecx
++	xorl %eax, %eax
++	rep; stosb
++
++	push $_fini
++	call atexit
++	addl $4,%esp
++
++	call _init
++
++	call main
++	addl $8,%esp
++
++	push %eax
++	call exit
++	addl $4,%esp
++
++3:
++	hlt
++	jmp 3b
+diff -NrwuBb a/newlib/libc/sys/iposix/syscalls.c b/newlib/libc/sys/iposix/syscalls.c
+--- a/newlib/libc/sys/iposix/syscalls.c	1970-01-01 01:00:00.000000000 +0100
++++ b/newlib/libc/sys/iposix/syscalls.c	2012-05-04 10:39:18.000000000 +0200
+@@ -0,0 +1,8 @@
++/* since syscalls are the libraries interfaces to the kernel and we want to use
++ * these libraries in the kernel we have to implement the syscall function
++ * anywhere else and depeneding on if we are compiling a user level programm
++ * or the kernel it self.
++ */
++void anywhere_else_just_a_function_that_prevents_the_output_from_being_empty(void)
++{
++}

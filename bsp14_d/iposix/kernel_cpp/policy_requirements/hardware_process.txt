@@ -1,0 +1,54 @@
+A hardware dependent process, used as a policy by "process", the hardware
+independent part of a process, needs to implement the following functions:
+
+Splitting:
+	Splitting is the support for splitted memory areas. If your
+	implementation has a page_size of 4096 bytes, a malloc about 8192
+	bytes maybe returns 2 memory areas, which has to be mapped together in
+	virtual memory.
+
+public:
+
+This enum with important constants has to be available:
+	
+	enum constants
+	{
+		page_size = ...,
+	};
+
+void * add_virtual_memory( const std::vector< void * >& addresses, void * vaddr = 0 );
+	---> This function receives the physical addresses of newly allocated
+	memory, the size of the memory block and maybe the virtual
+	address where the memory has to be mapped. If this address is 0,
+	the address should be determined automatically.
+	Normally it will search a free memory area in it's virtual memory
+	table and create the necessary entries for the memory block.
+	Returns 0 on failure or the virtual address on success.
+
+void * get_phys_address( void * vaddr );
+	---> This function receives a virtual address an has to return the
+	     corresponding physical address.
+
+bool remove_virtual_memory( void * vaddr );
+	---> This is the counter part to add_virtual_memory. It has to remove
+	     the given memory block from it's virtual memory table and has to
+	     return true on success or false on failure.
+
+void unpresent( void * vaddr );
+	---> Set the page behind the vaddr unpresent. This will be called if
+	the virtual memory system has swapped this page.
+
+void present( void * vaddr, void * addr );
+	---> Set the page behind vaddr to addr and mark it present.
+
+bool copy_in( void * vaddr, void * addr, size_t size );
+	---> copy data from physical address addr to virtual address vaddr.
+	     Returns true on success.
+
+bool copy_out( void * addr, void * vaddr, size_t size );
+	---> copy data from virtual address vaddr to physical address addr.
+	     Returns true on success.
+
+bool copy_address_space( const your_hardware_process_type& proc );
+	---> copy the whole adress space from proc.
+	     Returns true on success.

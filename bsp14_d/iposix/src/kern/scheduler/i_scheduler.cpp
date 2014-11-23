@@ -1,0 +1,150 @@
+#include "scheduler/i_scheduler.h"
+#include "scheduler/i_process.h"
+#include "logger/logger.h"
+
+namespace iposix {
+namespace scheduler {
+
+template<>
+scheduler_type::i_scheduler()
+	: next_pid( 1 )
+{ }
+
+template<>
+scheduler_type::~i_scheduler()
+{ }
+
+template<>
+bool scheduler_type::new_process(
+		process_entry_function fct_ptr,
+		uint32_t num,
+		int state, //pus de Brinzi
+		void* data,
+		bool kernel_process,
+		bool run_in_kernel
+		)
+{
+	logger << message::MORE_VERBOSE << __func__
+		<< ": Creating new Process with pid " << this->next_pid << endl;
+
+	process_type* cur = this->get_current_process();
+	if ( !cur )
+	{
+		return false;
+	}
+
+	process_type* child = new process_type( kernel_process );
+	if ( child )
+	{
+		child->pid = this->next_pid++;
+
+		//copy addressspace
+		bool success = child->copy_address_space( *cur );
+		if ( !success )
+		{
+			delete child;
+			return false;
+		}
+
+		//copy filehandles
+		child->copy_filehandles( *cur );
+
+		//prepare for running
+		this->prepare( *child, run_in_kernel, fct_ptr, num, data );
+
+		//add to scheduler
+		this->push_new( child );
+	}
+
+	return true;
+}
+
+template<>
+bool scheduler_type::fork_process( bool kernel, uint32_t& child_pid )
+{
+	logger << message::MORE_VERBOSE << __func__
+		<< ": Forking new Process with pid " << this->next_pid << endl;
+
+	process_type* cur = this->get_current_process();
+	if ( !cur )
+	{
+		return false;
+	}
+
+	process_type* child = new process_type( kernel );
+	if ( child )
+	{
+		child->pid = this->next_pid++;
+		child_pid = child->pid;
+		
+		uint32_t parent_pid = cur->pid;
+		uint32_t ret_pid = 0;
+
+		//copy addressspace
+		bool success = child->copy_address_space( *cur );
+		if ( !success )
+		{
+			delete child;
+			return false;
+		}
+
+		//copy filehandles
+		child->copy_filehandles( *cur );
+
+		ret_pid = this->prepare( *cur, *child );
+
+		if ( ret_pid != parent_pid )
+		{
+			//the child
+			child_pid = 0;
+		}
+		else
+		{
+			//the parent
+			this->push_new( child );
+		}
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+template<>
+bool scheduler_type::exit_process()
+{
+	return false;
+}
+
+template<>
+void scheduler_type::put_process0( process_type* process0 )
+{
+	logger << message::MORE_VERBOSE << __func__
+		<< ": Take Process 0" << endl;
+
+	process0->pid = 0;
+
+	this->push_new( process0 );
+
+	this->set_current( *process0 );
+}
+
+template<>
+void scheduler_type::context_switch()
+{
+	scheduler_type& instance = ::iposix::utils::Singleton< scheduler_type >::instance();
+
+	process_type* current = instance.get_current_process();
+	process_type* next = instance.get_next_process();
+
+	if ( current && next && current != next )
+	{
+		//do the context switch
+		instance.switch_to( *current, *next );
+	}
+}
+
+} //namespace scheduler
+} //namespace iposix

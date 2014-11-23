@@ -1,0 +1,12 @@
+diff -burN gmp-4.2.4.org/configfsf.sub gmp-4.2.4/configfsf.sub
+--- gmp-4.2.4.org/configfsf.sub	2009-05-19 00:47:16.000000000 +0200
++++ gmp-4.2.4/configfsf.sub	2009-05-19 00:49:06.000000000 +0200
+@@ -1251,7 +1251,7 @@
+ 	      | -*vms* | -sco* | -esix* | -isc* | -aix* | -sunos | -sunos[34]*\
+ 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
+ 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
+-	      | -aos* \
++	      | -aos* | -iPosix* \
+ 	      | -nindy* | -vxsim* | -vxworks* | -ebmon* | -hms* | -mvs* \
+ 	      | -clix* | -riscos* | -uniplus* | -iris* | -rtu* | -xenix* \
+ 	      | -hiux* | -386bsd* | -knetbsd* | -mirbsd* | -netbsd* \

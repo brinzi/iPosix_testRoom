@@ -1,0 +1,19 @@
+1.		+ Boot Process
+			+ dummy I/O
+				+ Display
+				+ Keyboard
+2.		+ OS
+3.		+ VM
+4.		- Sync
+			- Semaphore
+			(- Monitor)
+5.		- Scheduling
+			- Round Robin
+			(- ???)
+6.		- Syscalls
+7.		- I/O good one
+				- Display
+				- Keyboard
+				- 
+8.		(- filesystem)
+9.		(- swapping)
