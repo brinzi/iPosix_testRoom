@@ -31,16 +31,16 @@ class round_robin
 
 	//pus de Brinzi
 
-	struct ready_process_list
+	struct inactive_process_list
 	{
-		ready_process_list* next;	
+		inactive_list* next;	
 		process_type* process;
 	};	
 
 	struct blocked_process_list
 	{
 		blocked_process_list* next;
-		process_type process; 	
+		process_type* process; 	
 	};
 
 	
@@ -194,23 +194,55 @@ class round_robin
 			return 0;
 		}
 
+			
 		static inline uint64_t ticks_between_reschedulings()
 		{
 			return 1000;
 		}
+	    
 
+
+		//Added by Nica	
+		process_type* move_to_inactive(process_type* process)
+		{
+			
+			inactive_list* cur_inactive=this->inactive_list_head;
+			inactive_list* aux = new inactive_list();
+
+			if(aux)
+			{
+				aux->process=process;
+				aux->next=this->inactive_list_head;
+			
+				if(!this->cur_ready)
+				{
+					if(this->ready_list_head)
+					{
+						this_cur_reasy=this->cur_list_head;
+					}
+					else
+					{
+						this->cur_ready=aux;
+					}
+			
+			this->ready_list_head=aux;
+				}
+			}
+		}
+		
 	private:
 		/** A Pointer to the head of the list */
 		process_list* list_head;
 		
-		/**Added by Brinzi */
-		ready_process_list* ready_list_head;
-		blocked_process_list* blocked_process_list_head;
+		/**Added by Brinzi-pointers to the head of the rady list and blocked one. */
+		inactive_list* inactive_list_head;
+		blocked_process_list* blocked_list_head;
   
 
 		/** A Pointer to the current process in the list */
 		process_list* cur;
-		ready_process_list* cur_ready;
+		inactive_list* cur_inactive;
+		blocked_process_list* cur_blocked;
 
 };
 
@@ -219,4 +251,4 @@ class round_robin
 } //namespace iposix
 
 #endif /* !_KERN_INCLUDE_SCHEDULER_POLICIES_ROUND_ROBIN_HPP_ */
-#ifndef _KERN_INCLUDE_SCHEDULER_POLICIES_ROUND_ROBIN_HPP_
+
