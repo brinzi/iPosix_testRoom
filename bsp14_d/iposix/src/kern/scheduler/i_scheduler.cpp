@@ -157,10 +157,10 @@ void scheduler_type::block_process(process_type* process)
 	process->state=0;
 
 	//Adds process to the blocked queue.
-	process->move_to_blocked(process);
+	this->move_to_blocked(process);
 
 	//Removes process from ready queue.
-	process->remove(process);
+	this->remove(process);
 
 }
 /*Move process to ready queue.*/
@@ -174,12 +174,12 @@ void scheduler_type::unblock_process(process_type* process)
 	process->state=1;
 
 	//Move process to ready list.
-	process->move_to_ready(process);
-
-	//Remove from blocked
-	process->remove_from_blocked(process);
+	this->move_to_ready(process);
 }
-/*Take the process from ready to running.*/
+
+	
+
+/*Take process from ready to running.*/
 template<>
 void scheduler_type::assign_process(process_type* process)
 {	
@@ -200,8 +200,6 @@ template<>
 void scheduler_type::initialise(process_type* process)
 {
 	this->push_new(process);
-	
-	this->remove_from_inactive(process);
 }
 /*Terminates the process calling exit_process*/
 template<>
