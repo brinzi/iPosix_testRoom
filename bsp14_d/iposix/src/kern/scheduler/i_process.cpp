@@ -8,7 +8,7 @@ template<>
 i_process< PROCESS >::i_process( bool kernel )
 	: PROCESS( kernel ),
 	  pid(),
-	  state(0),	//pus de mine 
+	  state(0),	//pus de Brinzi 
 	  kernel( kernel ),
 	  heap_top( 0 ),
 	  heap_max( 0 )

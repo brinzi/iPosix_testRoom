@@ -25,7 +25,7 @@ struct i_process
 
 	uint32_t pid;			/**< process identification */
 	bool kernel;			/**< kernel process? */
-	int state;	
+	int state;			//added by Brinzi		
 	void * heap_top;		/**< current end of the heap */
 	void * heap_max;		/**< heap_top can't exceed heap_max */
 

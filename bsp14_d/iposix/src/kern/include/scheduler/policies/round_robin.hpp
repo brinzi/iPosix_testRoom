@@ -219,3 +219,4 @@ class round_robin
 } //namespace iposix
 
 #endif /* !_KERN_INCLUDE_SCHEDULER_POLICIES_ROUND_ROBIN_HPP_ */
+#ifndef _KERN_INCLUDE_SCHEDULER_POLICIES_ROUND_ROBIN_HPP_
