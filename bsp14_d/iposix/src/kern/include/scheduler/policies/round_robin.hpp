@@ -199,7 +199,7 @@ class round_robin
 		{
 			return 1000;
 		}
-		
+		/* Move the process to the ready list and unblock it.*/
 		void move_to_ready(process_type* process)
 		{
 			ready_process_list* cur_ready=this->ready_list_head;
@@ -220,11 +220,12 @@ class round_robin
 						this->cur_ready=aux;
 					}
 			
-			this->ready_list_head=aux;
 			}
+			this->ready_list_head=aux;
+			process->state=1;
 		}
 }		
-
+		/*Move the process to the blocked list and block it.*/
 		void  move_to_blocked(process_type* process)
 		{	
 			blocked_process_list* cur_blocked=this->cur_blocked;
@@ -243,8 +244,9 @@ class round_robin
 				{	
 					this->cur_blocked=aux;
 				}
-			this->blocked_list_head=aux;
 			}	
+			this->blocked_list_head=aux;
+			process->state=0;
 		}
 			
 	private:

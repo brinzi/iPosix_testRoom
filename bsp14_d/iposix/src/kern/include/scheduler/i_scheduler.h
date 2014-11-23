@@ -66,6 +66,18 @@ class i_scheduler
 		 */
 		static void context_switch();
 
+		void block_process(process_type* process);
+
+		void unblock_process(process_type* process);
+	
+		void assign_process(process_type* process);
+		
+		void resign_process(process_type* process);
+		
+		void initialise(process_type* process);
+
+		void terminate();
+
 	private:
 		i_scheduler();
 
