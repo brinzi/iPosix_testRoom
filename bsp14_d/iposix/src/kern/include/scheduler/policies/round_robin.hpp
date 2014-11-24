@@ -221,8 +221,8 @@ namespace iposix {
 				}
 
 
-				//select porcess from inactive list
-				process_type* select_from_blocked(process_type* process ){
+				//remove  porcess from blocked list and return process
+				process_type* remove_from_blocked(process_type* process ){
 					blocked_process_list* aux =this->blocked_list_head;
 					blocked_process_list* prev = 0;
 					while(aux &&(aux->process == process))
@@ -232,13 +232,25 @@ namespace iposix {
 					}
 					if(cur&&(cur->process=process))
 					{
-	if(prev)
-	{
-	
-	}
-}										
-
+						if(prev)
+						{
+							prev->blocked_next=aux->blocked_next;	
+						}else if(aux==this->blocked_list_head){
+							this-.blocked_list_head=aux->blocked_next;
+						}else{
+							//exception
+						}
+					process_type* p= aux->process;
+					aux->process=0;
+					delete aux;
+					return p;	
+					}
+				return 0;										
+					
 				}
+
+					
+				
 
 
 				//adds a process to blocked	
