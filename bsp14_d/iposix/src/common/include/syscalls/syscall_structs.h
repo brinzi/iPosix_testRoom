@@ -192,6 +192,14 @@ struct gettimeofday_data_t
 	void* timezone;
 };
 
+struct pipe_data_t
+{
+	int read_file_descriptor;
+	int write_file_descriptor;
+	unsigned int pid;
+	char* buffer;
+}
+	
 
 } //namespace syscall
 } //namespace iposix

@@ -319,8 +319,16 @@ inline void real_dispatch_syscall( syscall_message& msg )
 				}
 			}
 			break;
+		
+		case scalls::pipe_call:
+			{
+				filehandle_ptr fd = cur_process->get_filehndle(msg.read_data.file_descriptor);
+			  	uint32_t child_pid=0;
 
-		case syscalls::exit_call:
+				bool success=::iposix::utils::Singleton<scheduler_type>::instance().fork_process(false,child_pid);	
+					
+				
+		case  syscalls::exit_call:
 			{
 				bool success = ::iposix::utils::Singleton< scheduler_type >::instance().exit_process();
 				if ( !success )
