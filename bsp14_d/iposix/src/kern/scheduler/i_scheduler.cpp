@@ -146,5 +146,69 @@ void scheduler_type::context_switch()
 	}
 }
 
+/*Move process to blocked*/	
+template<>
+void scheduler_type::block_process(process_type* process)
+{	
+	//Switch context so that data will be preserved.
+	this->context_switch();
+
+	//Set's status to 0=blocked.
+	process->state=0;
+
+	//Adds process to the blocked queue.
+	this->move_to_blocked(process);
+
+	//Removes process from ready queue.
+	this->remove(process);
+
+	//Current gets next process
+	cur=this->get_next_process();
+
+}
+/*Move process to ready queue.*/
+template<>
+void scheduler_type::unblock_process(process_type* process)
+{
+	//Switch context.
+	this->context_switch();
+
+	//Set the status of the process to 1=ready.
+	process->state=1;
+
+	//Move process to ready list.
+	this->move_to_ready(process);
+}
+
+	
+
+/*Take process from ready to running.*/
+template<>
+void scheduler_type::assign_process(process_type* process)
+{	
+	this->push_new(process);
+	
+	this->set_current(*process);
+}
+/*Take the process from running to ready*/
+template<>
+void scheduler_type::resign_process(process_type* process)
+{	
+	this->context_switch();	
+
+	this->push_new(process);
+}
+/*Move from inactive to ready*/
+template<>
+void scheduler_type::initialise(process_type* process)
+{
+	this->push_new(process);
+}
+/*Terminates the process calling exit_process*/
+template<>
+void scheduler_type::terminate()
+{
+	this->exit_process();
+}
 } //namespace scheduler
 } //namespace iposix
