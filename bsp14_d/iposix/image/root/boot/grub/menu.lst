@@ -50,11 +50,11 @@ color magenta/blue white/magenta
 
 
 
-title		borisOS
+title		iPosix.gz
 root		(hd0,0)
 kernel		--type=multiboot /boot/kernel.gz
 
-title		
+title		cpp Kernel
 root		(hd0,0)
 kernel		--type=multiboot /boot/kernel
 

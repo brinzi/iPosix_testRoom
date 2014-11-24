@@ -391,9 +391,9 @@ void iposix::syscalls::halt()
 	//TODO
 }
 
-int iposix::syscalls::pipe( int /*fd*/ )
+int iposix::syscalls::pipe( int pipefd[2], int flags )
 {
-	//TODO
+	
 	return -1;
 }
 

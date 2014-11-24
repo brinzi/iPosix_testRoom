@@ -162,6 +162,9 @@ void scheduler_type::block_process(process_type* process)
 	//Removes process from ready queue.
 	this->remove(process);
 
+	//Current gets next process
+	cur=this->get_next_process();
+
 }
 /*Move process to ready queue.*/
 template<>

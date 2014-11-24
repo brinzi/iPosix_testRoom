@@ -50,7 +50,7 @@ color magenta/blue white/magenta
 
 
 
-title		BrinzOS
+title		borisOS
 root		(hd0,0)
 kernel		--type=multiboot /boot/kernel.gz
 

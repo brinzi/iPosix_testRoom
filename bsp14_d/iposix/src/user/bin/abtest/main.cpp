@@ -15,14 +15,14 @@ int main()
 	{
 		while ( true  )
 		{
-			printf("Te");
+			printf("a");
 		}
 	}
 	else
 	{
 		while ( true )
 		{
-			printf("Iubesc");
+			printf("b");
 		}
 	}
 
