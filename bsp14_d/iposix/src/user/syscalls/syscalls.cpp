@@ -393,7 +393,10 @@ void iposix::syscalls::halt()
 
 int iposix::syscalls::pipe( int pipefd[2], int flags )
 {
-	
+
+	syscall_message msg; 
+
+
 	return -1;
 }
 
