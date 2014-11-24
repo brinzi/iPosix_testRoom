@@ -50,6 +50,7 @@ enum syscall_type
 	wait_call,			/**< a wait call */
 	write_call,			/**< a write call */
 	gettimeofday_call	/**< a get time of day call */
+	pipe_call              /**<pipe call*/
 };
 
 /**
@@ -79,6 +80,7 @@ inline const ::std::string& syscall_type_to_string( syscall_type st )
 	static const ::std::string TIMES_CALL			= "times call";
 	static const ::std::string UNLINK_CALL			= "unlink call";
 	static const ::std::string WAIT_CALL			= "wait call";
+	static const ::std::string PIPE_CALL			=  "pipe call "; //added by brinzi
 	static const ::std::string WRITE_CALL			= "write call";
 	static const ::std::string GETTIMEOFDAY_CALL	= "get time of day call";
 
@@ -104,6 +106,8 @@ inline const ::std::string& syscall_type_to_string( syscall_type st )
 		case wait_call:				return WAIT_CALL;
 		case write_call:			return WRITE_CALL;
 		case gettimeofday_call:		return GETTIMEOFDAY_CALL;
+		case pipe_call			return PIPE_CALL;
+ 	
 		default:					return NOSUCH;
 	}
 }
@@ -190,6 +194,10 @@ struct syscall_message
 		struct wait_data_t wait_data;					/**< wait data */
 		struct write_data_t write_data;					/**< write data */
 		struct gettimeofday_data_t gettimeofday_data;	/**< get time of day data */
+		struct pipe_data_t pipe_data;                    /**<pipe call*/ //added by brinzi
+		{
+			/* data */
+		};
 	};
 
 	/** the error */
