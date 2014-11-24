@@ -228,7 +228,7 @@ namespace iposix {
 					while(aux &&(aux->process == process))
 					{
 						prev=aux;
-						aux=aux->inactive_next;	
+						aux=aux->blocked_next;	
 					}
 					if(cur&&(cur->process=process))
 					{
@@ -236,7 +236,7 @@ namespace iposix {
 						{
 							prev->blocked_next=aux->blocked_next;	
 						}else if(aux==this->blocked_list_head){
-							this-.blocked_list_head=aux->blocked_next;
+							this->blocked_list_head=aux->blocked_next;
 						}else{
 							//exception
 						}

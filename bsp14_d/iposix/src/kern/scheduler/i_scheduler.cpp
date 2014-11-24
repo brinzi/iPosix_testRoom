@@ -127,7 +127,7 @@ void scheduler_type::put_process0( process_type* process0 )
 	process0->pid = 0;
 
 	this->push_new( process0 );
-
+	
 	this->set_current( *process0 );
 }
 
@@ -148,66 +148,92 @@ void scheduler_type::context_switch()
 
 /*Move process to blocked*/	
 template<>
-void scheduler_type::block_process(process_type* process)
-{	
-	//Switch context so that data will be preserved.
-	this->context_switch();
+void scheduler_type::block_process()
+{
+	
+	scheduler_type& instance= ::iposix::utils::Singleton< scheduler_type >::instance();
+	//remove cuurent process form list and preserve the process
+	process_type* p=this(this->remove(instance.get_current_process()); 
+
+	//switch to next process
+	this->context_switch()
+
+	this->set_current(*(instance.get_next_process())))
 
 	//Set's status to 0=blocked.
-	process->state=0;
+	p->state=0;
 
 	//Adds process to the blocked queue.
-	this->move_to_blocked(process);
+	this->move_to_blocked(p);
 
-	//Removes process from ready queue.
-	this->remove(process);
 
-	//Current gets next process
-	cur=this->get_next_process();
+;
+	
 
 }
 /*Move process to ready queue.*/
 template<>
 void scheduler_type::unblock_process(process_type* process)
 {
-	//Switch context.
-	this->context_switch();
+	process_type* p= this->remove_from_blocked(process);	
+	if(p)
+	{
+		//Set the status of the process to 1=ready.
+		process->state=1;
 
-	//Set the status of the process to 1=ready.
-	process->state=1;
-
-	//Move process to ready list.
-	this->move_to_ready(process);
+		//Move process to ready list.
+		this->push_new(p);
+	}
+	else
+	{
+		//exception
+	}
 }
 
-	
+
 
 /*Take process from ready to running.*/
 template<>
 void scheduler_type::assign_process(process_type* process)
 {	
-	this->push_new(process);
-	
+
+	scheduler_type& instance= ::iposix::utils::Singleton< scheduler_type >::instance();
+
+	//get current process
+	process_type* p=instance.get_current_process();
+
+	//set the selectect process as current
+	this->switch_to(*p,*process);
 	this->set_current(*process);
 }
 /*Take the process from running to ready*/
-template<>
-void scheduler_type::resign_process(process_type* process)
+	template<>
+void scheduler_type::resign_process()
 {	
-	this->context_switch();	
 
-	this->push_new(process);
+	scheduler_type& instance= ::iposix::utils::Singleton< scheduler_type >::instance();
+	
+	//get next process
+	process_type* next=instance.get_next_process();
+
+	//do context switch
+	this->context_switch();
+	this->set_current(*next);
+	
+	
 }
 /*Move from inactive to ready*/
-template<>
+	template<>
 void scheduler_type::initialise(process_type* process)
 {
-	this->push_new(process);
+	//to do
+	
 }
 /*Terminates the process calling exit_process*/
-template<>
+	template<>
 void scheduler_type::terminate()
 {
+	//to do a lot	
 	this->exit_process();
 }
 } //namespace scheduler
