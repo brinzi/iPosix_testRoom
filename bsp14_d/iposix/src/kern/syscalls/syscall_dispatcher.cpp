@@ -109,7 +109,7 @@ inline void real_dispatch_syscall( syscall_message& msg )
 				//get the filehandle
 				filehandle_ptr fd =
 					cur_process->get_filehandle( msg.read_data.file_descriptor );
-//auto
+	
 				if ( fd )
 				{
 					fd->read( msg.read_data.buffer, msg.read_data.length );
@@ -320,13 +320,10 @@ inline void real_dispatch_syscall( syscall_message& msg )
 			}
 			break;
 		
-		case scalls::pipe_call:
+		case syscalls::pipe_call:
 			{
-				filehandle_ptr fd = cur_process->get_filehndle(msg.read_data.file_descriptor);
-			  	uint32_t child_pid=0;
-
-				bool success=::iposix::utils::Singleton<scheduler_type>::instance().fork_process(false,child_pid);	
-					
+			}
+			break;	
 				
 		case  syscalls::exit_call:
 			{

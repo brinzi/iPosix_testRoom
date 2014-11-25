@@ -198,7 +198,7 @@ struct pipe_data_t
 	int write_file_descriptor;
 	unsigned int pid;
 	char* buffer;
-}
+};
 	
 
 } //namespace syscall

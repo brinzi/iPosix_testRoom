@@ -49,7 +49,7 @@ enum syscall_type
 	unlink_call,		/**< a unlink call */
 	wait_call,			/**< a wait call */
 	write_call,			/**< a write call */
-	gettimeofday_call	/**< a get time of day call */
+	gettimeofday_call,	/**< a get time of day call */
 	pipe_call              /**<pipe call*/
 };
 
@@ -106,7 +106,7 @@ inline const ::std::string& syscall_type_to_string( syscall_type st )
 		case wait_call:				return WAIT_CALL;
 		case write_call:			return WRITE_CALL;
 		case gettimeofday_call:		return GETTIMEOFDAY_CALL;
-		case pipe_call			return PIPE_CALL;
+		case pipe_call:				return PIPE_CALL; // added by Brinzi
  	
 		default:					return NOSUCH;
 	}
@@ -194,10 +194,8 @@ struct syscall_message
 		struct wait_data_t wait_data;					/**< wait data */
 		struct write_data_t write_data;					/**< write data */
 		struct gettimeofday_data_t gettimeofday_data;	/**< get time of day data */
-		struct pipe_data_t pipe_data;                    /**<pipe call*/ //added by brinzi
-		{
-			/* data */
-		};
+		struct pipe_data_t pipe_data;               /**<pipe call*/ //added by brinzi
+		
 	};
 
 	/** the error */

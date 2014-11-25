@@ -38,7 +38,7 @@ bool scheduler_type::new_process(
 	{
 		child->pid = this->next_pid++;
 
-		//copy addressspace
+	//copy addressspace
 		bool success = child->copy_address_space( *cur );
 		if ( !success )
 		{
@@ -151,7 +151,7 @@ template<>
 void scheduler_type::block_process()
 {
 	
-	scheduler_type& instance= ::iposix::utils::Singleton< scheduler_type >::instance();
+	scheduler_type& instance = ::iposix::utils::Singleton< scheduler_type >::instance();
 	//remove cuurent process form list and preserve the process
 	process_type* p=this(this->remove(instance.get_current_process()); 
 
@@ -165,10 +165,6 @@ void scheduler_type::block_process()
 
 	//Adds process to the blocked queue.
 	this->move_to_blocked(p);
-
-
-;
-	
 
 }
 /*Move process to ready queue.*/
@@ -190,8 +186,6 @@ void scheduler_type::unblock_process(process_type* process)
 	}
 }
 
-
-
 /*Take process from ready to running.*/
 template<>
 void scheduler_type::assign_process(process_type* process)
@@ -207,7 +201,7 @@ void scheduler_type::assign_process(process_type* process)
 	this->set_current(*process);
 }
 /*Take the process from running to ready*/
-	template<>
+template<>
 void scheduler_type::resign_process()
 {	
 

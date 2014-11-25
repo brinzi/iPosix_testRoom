@@ -3,7 +3,11 @@
 #include <stdio.h>
 
 int main(){
-	fork();
-	printf("Hi\n");
-	exit(1);
+	int pid=fork();
+	
+	if(pid==0)
+		printf("i am paratent\n");
+		printf("i am child\n");
+	
+		exit(1);
 }

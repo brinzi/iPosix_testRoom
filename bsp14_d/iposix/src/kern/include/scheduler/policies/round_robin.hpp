@@ -285,5 +285,5 @@ namespace iposix {
 	} //namespace scheduler
 } //namespace iposix
 
-#endif /* !_KERN_INCLUDE_SCHEDULER_POLICIES_ROUND_ROBIN_HPP_ */
+#endif /** !_KERN_INCLUDE_SCHEDULER_POLICIES_ROUND_ROBIN_HPP_ */
 
