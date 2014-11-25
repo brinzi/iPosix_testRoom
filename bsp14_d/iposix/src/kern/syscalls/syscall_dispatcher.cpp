@@ -322,8 +322,14 @@ inline void real_dispatch_syscall( syscall_message& msg )
 		
 		case syscalls::pipe_call:
 			{
+<<<<<<< HEAD
 			}
 			break;	
+=======
+				filehandle_ptr fdin = cur_process->get_filehndle(msg.pipe_data.read_file_descriptor);
+			}
+					
+>>>>>>> b36fc959157116c7ab09a2d0970210825fbbf316
 				
 		case  syscalls::exit_call:
 			{

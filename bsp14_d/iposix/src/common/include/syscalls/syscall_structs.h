@@ -197,6 +197,7 @@ struct pipe_data_t
 	int read_file_descriptor;
 	int write_file_descriptor;
 	unsigned int pid;
+	unsigned int child_pid;
 	char* buffer;
 };
 	
