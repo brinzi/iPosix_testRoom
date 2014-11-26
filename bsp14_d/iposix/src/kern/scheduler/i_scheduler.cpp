@@ -153,12 +153,12 @@ void scheduler_type::block_process()
 	
 	scheduler_type& instance = ::iposix::utils::Singleton< scheduler_type >::instance();
 	//remove cuurent process form list and preserve the process
-	process_type* p=this(this->remove(instance.get_current_process()); 
+	process_type* p=this->remove(instance.get_current_process()); 
 
 	//switch to next process
-	this->context_switch()
 
-	this->set_current(*(instance.get_next_process())))
+	this->set_current(*(instance.get_next_process()));
+	this->context_switch();
 
 	//Set's status to 0=blocked.
 	p->state=0;

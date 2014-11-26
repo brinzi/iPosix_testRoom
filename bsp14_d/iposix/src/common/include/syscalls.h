@@ -388,7 +388,7 @@ extern "C" void halt(void);
  * Creates a pipe
  * @param[in]
  */
-extern "C" int pipe( int fd );
+extern "C" int pipe( int fd[] );
 
 /**
  * Duplicates a filehandle

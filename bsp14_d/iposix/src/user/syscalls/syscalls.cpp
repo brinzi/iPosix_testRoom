@@ -391,20 +391,8 @@ void iposix::syscalls::halt()
 	//TODO
 }
 
-int iposix::syscalls::pipe( int pipefd[2], int flags )
+int iposix::syscalls::pipe( int pipefd[])
 {
-
-	syscall_message msg;
-
-	msg.pipe_data.read_file_descriptor=pipefd[0];
-	msg.write_file_descriptor.pipe_data=pipefd[1];
-	char* buff;
-	unsigned int child_pid=this->fork();
-
-	
-
-
-
 
 
 	return -1;

@@ -1,6 +1,9 @@
 #ifndef _CLASS_PIPE_
 #define _CLASS_PIPE_
 
+#include <stdint.h>
+#include "fs/filehandle.h"
+
 namespace iposix{
 	namespace fs{
 		class pipe{
@@ -29,12 +32,14 @@ namespace iposix{
 					return filehandle::read( this->buffer , 512 )
 				}
 
-				void write( len  )
+				void write(uint32_t len  )
 				{
 					filehandle::write( this->buffer ,len );
-				{
+				}
 				
 				
-		}//fs
+		};	this->context_switch();
+//fs
 	}//iposix
 }
+#endif 
