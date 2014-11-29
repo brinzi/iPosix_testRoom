@@ -9,47 +9,65 @@ namespace iposix{
 		class pipe{
 		
 			private:
+				//the buffer where the data is going to be stored.
 				char* buffer;
-				
+				//the filehandle 
 				filehandle_ptr fd;		
-
+				//the two filedescriptors 
+				int in, out;
+				//theese represent if the streams are closed or open
+				bool instream, outstream;
+					
 			public:
-			
+				/**Constructor*/
 				pipe( int fd[])
 				{
-					this->read_fd = fd[0];
+					this->in = fd[0];
 
-					this->write_fd = fd[1];
+					this->out = fd[1];
 				}
-
+				/**Destructor*/
 				~pipe()
 				{}
 			
-				
-				
-				void set_read( int file_descriptor )
-				{
-					fd = cur_process->get_filhandle( file_descriptor );
-				}
-
+				/**Read function*/
 				uint32_t read()
 				{
-					uint32_t len = fd->read( this->buffer, 512 );
-					return len;
-				}
+					if ( instream )
+					{	
+
+						fd = cur_process->get_filehandle( in );
+							
+						uint32_t len = fd->read( this->buffer, 512 );
 				
-				void set_write()
-				{
-					fd = cur_process->get_filehandle( file_descriptor );
+						return len;
+					}
+					else return 0;	
 				}
-				
+
+				/**Write function*/				
 				uint32_t write()
-				{
-					uint32_t len = filehandle::write( this->buffer ,len );
+				{	
+					if ( outstream )
+					{	
+						fd = cur_process->get_filehandle( out );
+						
+						uint32_t len = fdout->write( this->buffer ,len );
 					
-					return len;
+						return len;
+					}
+					else return 0;
 				}
-				
+				/**Switch the input stream status*/
+				void change_read()
+				{
+					instream = !instream;
+				}
+				/**Changes the output stream status*/
+				void change_write()
+				{
+					outstream = !outstream;
+				}
 		}//pipe
 	}//fs
 }//iposix				
