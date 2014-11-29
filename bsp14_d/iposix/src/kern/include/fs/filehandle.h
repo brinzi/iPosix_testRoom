@@ -64,7 +64,7 @@ class filehandle
 		 * @param[in] length the amount of data to read
 		 * @return true on success else false
 		 */
-		uint32_t read( void* buffer, uint32_t length );//DOTHATEVERYWHERE
+		uint32_t read( void* buffer, uint32_t length );
 
 		/**
 		 * Write *length* amount of data from the buffer to the file

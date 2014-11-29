@@ -35,7 +35,7 @@ class filehandle
 				i_fs_node_ptr node,
 				const char flags,
 				const char mode,
-				const int filehandle_num );
+				const uint32_t filehandle_num );
 
 		/** Destructor */
 		~filehandle();
@@ -44,7 +44,7 @@ class filehandle
 		 * Returns the filehandle number
 		 * @return the filehandle number
 		 */
-		inline int filehandle_num() const
+		inline uint32_t filehandle_num() const
 		{
 			return this->fd;
 		}

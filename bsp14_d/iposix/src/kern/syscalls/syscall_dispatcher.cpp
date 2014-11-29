@@ -76,7 +76,7 @@ inline void real_dispatch_syscall( syscall_message& msg )
 				{
 					msg.open_data.file_descriptor = cur_process->push_filehandle(
 							file,
-							msg.open_data.flags,
+						msg.open_data.flags,
 							msg.open_data.create_mode );
 				}
 				else

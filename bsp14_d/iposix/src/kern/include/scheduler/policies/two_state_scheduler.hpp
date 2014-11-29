@@ -20,7 +20,9 @@ namespace iposix{
 
 			private:
 				process_list* ready_head;
+
 				process_list* blocked_head;
+
 				process_list* cur;	
 			
 			
@@ -92,7 +94,7 @@ namespace iposix{
 								this->cur=pl;
 							}
 						}
-						this->list_head=pl;
+						this->ready_head=pl;
 					}
 					else
 					{
@@ -127,6 +129,7 @@ namespace iposix{
 							process_type* p = cur->process;
 
 							cur->process = 0;
+
 							delete cur;
 				
 							return p;
@@ -135,35 +138,34 @@ namespace iposix{
 						return 0;
 					}
 					
-					void block_process( process_type* process )
+					void block_process( )
 					{
 						process_list* pl = new process_list();
-						pl->process = process;
-
-						if ( pl )
+						
+						if ( this->cur )
 						{
+							pl->process = this->cur->process;
+
 							pl->next = this->blocked_head;
-							pl->process = process;	
-							this->blocked_head = pl;								
-							remove( process , ready_head );
+
+							this->blocked_head = pl;
 						}
 						else
 						{
-							//no process...
-						}
-						
-						
+							//no current process?
+						}		
 					}
 			
 					void unblock_process( process_type* process )
 					{
 						process_list* pl = new process_list();
-						pl->process = process;
 						
+						pl->process = process;
+				
 						if ( pl )
 						{
 							pl->next = this->ready_head;
-							pl->process = process;
+
 							if ( !this->cur )
 							{
 								if ( this->ready_head )
@@ -176,7 +178,7 @@ namespace iposix{
 								}
 								
 							this->ready_head = pl;	
-							remove( process , blocked_head );
+
 							}
 						}
 						else

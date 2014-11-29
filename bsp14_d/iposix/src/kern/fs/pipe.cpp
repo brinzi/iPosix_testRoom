@@ -9,12 +9,10 @@ namespace iposix{
 		class pipe{
 		
 			private:
-				int read_fd;
-				
-				int write_fd;
-
 				char* buffer;
-			
+				
+				filehandle_ptr fd;		
+
 			public:
 			
 				pipe( int fd[])
@@ -27,19 +25,32 @@ namespace iposix{
 				~pipe()
 				{}
 			
-				uint32_t read()
+				
+				
+				void set_read( int file_descriptor )
 				{
-					return filehandle::read( this->buffer , 512 )
+					fd = cur_process->get_filhandle( file_descriptor );
 				}
 
-				void write(uint32_t len  )
+				uint32_t read()
 				{
-					filehandle::write( this->buffer ,len );
+					uint32_t len = fd->read( this->buffer, 512 );
+					return len;
 				}
 				
+				void set_write()
+				{
+					fd = cur_process->get_filehandle( file_descriptor );
+				}
 				
-		};	this->context_switch();
-//fs
-	}//iposix
-}
+				uint32_t write()
+				{
+					uint32_t len = filehandle::write( this->buffer ,len );
+					
+					return len;
+				}
+				
+		}//pipe
+	}//fs
+}//iposix				
 #endif 
